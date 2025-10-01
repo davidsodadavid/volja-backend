@@ -20,6 +20,10 @@ module.exports = defineConfig({
     backendUrl: process.env.MEDUSA_BACKEND_URL,
   },
   modules: [
+     {
+      resolve: "./src/modules/custom",
+    },
+
     {
       resolve: "@medusajs/medusa/cache-redis",
       options: {
