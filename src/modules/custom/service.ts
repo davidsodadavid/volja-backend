@@ -7,3 +7,4 @@ class CustomModuleService extends MedusaService({
 }
 
 export default CustomModuleService
+export * from "./links"

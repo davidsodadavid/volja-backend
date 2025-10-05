@@ -1,22 +1,39 @@
-import { createProductsWorkflow } from "@medusajs/medusa/core-flows"
-import { 
-  createCustomFromProductWorkflow, 
-  CreateCustomFromProductWorkflowInput,
-} from "../create-custom-from-product"
+// src/workflows/create-custom-from-product.ts
+import { createWorkflow, transform, when, WorkflowResponse } from "@medusajs/framework/workflows-sdk"
+import { ProductDTO } from "@medusajs/framework/types"
+import { createRemoteLinkStep } from "@medusajs/medusa/core-flows"
+import { createCustomStep } from "../create-custom-from-product/create-custom" 
 
-createProductsWorkflow.hooks.productsCreated(
-	async ({ products, additional_data }, { container }) => {
-    const workflow = createCustomFromProductWorkflow(container)
-    
-    for (const product of products) {
-      await workflow.run({
-        input: {
-          product,
-          additional_data,
-        } as CreateCustomFromProductWorkflowInput,
+export type CreateCustomFromProductWorkflowInput = {
+  product: ProductDTO
+  additional_data?: {
+    coming_soon?: boolean
+  }
+}
+
+export const createCustomFromProductWorkflow = createWorkflow(
+  "create-custom-from-product",
+  (input: CreateCustomFromProductWorkflowInput) => {
+    const comingSoon = transform(
+      { input },
+      (data) => data.input.additional_data?.coming_soon ?? false
+    )
+
+    const custom = createCustomStep({
+      coming_soon: comingSoon,
+      product_id: input.product.id,
+    })
+
+    when(({ custom }), ({ custom }) => custom !== undefined)
+      .then(() => {
+        createRemoteLinkStep([
+          {
+            custom: { id: custom.id },             
+            product: { product_id: input.product.id }, 
+          },
+        ])
       })
-    }
-	}
-)
 
-// Ovaj hook koci da se kreira novi proizvod
+    return new WorkflowResponse({ custom })
+  }
+)

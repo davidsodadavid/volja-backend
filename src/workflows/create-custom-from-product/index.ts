@@ -23,18 +23,15 @@ export const createCustomFromProductWorkflow = createWorkflow(
     )
 
     const custom = createCustomStep({
-      coming_soon: comingSoon,
+      coming_soon: input.additional_data?.coming_soon ?? false,
+      product_id: input.product.id,
     })
 
     when(({ custom }), ({ custom }) => custom !== undefined)
       .then(() => {
         createRemoteLinkStep([{
-          [Modules.PRODUCT]: {
-            product_id: input.product.id,
-          },
-          [CUSTOM_MODULE]: {
-            custom_id: custom.id,
-          },      
+          custom: { custom_id: custom.id },
+          product: { product_id: input.product.id },
         }])
       })
 
