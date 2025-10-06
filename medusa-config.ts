@@ -1,8 +1,9 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import path from "path"
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
-const path = require("path")
+// const path = require("path")
 
 module.exports = defineConfig({
   projectConfig: {
@@ -26,7 +27,6 @@ module.exports = defineConfig({
       resolve: path.join(__dirname, "src/modules/custom"),
       options: {},
     },
-
     {
       resolve: "@medusajs/medusa/cache-redis",
       options: {
@@ -45,6 +45,21 @@ module.exports = defineConfig({
         redis: {
           url: process.env.REDIS_URL,
         },
+      },
+    },
+    {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/file-local",
+            id: "local",
+            options: {
+              upload_dir: "uploads",
+              backend_url: "https://api.ateljevolja.si"
+            },
+          },
+        ],
       },
     },
   ],
