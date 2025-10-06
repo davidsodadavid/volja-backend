@@ -47,13 +47,5 @@ module.exports = defineConfig({
         },
       },
     },
-    {
-      resolve: "@medusajs/file-local",
-      options: {
-        upload_dir: "uploads", // 📁 Folder to store uploaded files (relative to project root)
-        backend_url: "https://api.ateljevolja.si", // 🌐 Your deployed backend base URL
-        serve_files_from: "uploads", // (optional) path prefix for serving files
-      },
-    },
   ],
 })
