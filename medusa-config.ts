@@ -56,7 +56,7 @@ module.exports = defineConfig({
             id: "local",
             options: {
               upload_dir: "uploads",
-              backend_url: "https://api.ateljevolja.si"
+              backend_url: "https://api.ateljevolja.si/uploads"
             },
           },
         ],
