@@ -27,6 +27,22 @@ module.exports = defineConfig({
       resolve: path.join(__dirname, "src/modules/custom"),
       options: {},
     },
+    {
+      resolve: "@medusajs/medusa/notification",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/notification-sendgrid",
+            id: "sendgrid",
+            options: {
+              channels: ["email"],
+              api_key: process.env.SENDGRID_API_KEY,
+              from: "Atelje Volja <info@ateljevolja.si>",
+            },
+          },
+        ],
+      },
+    },
     // {
     //   resolve: "@medusajs/medusa/cache-redis",
     //   options: {
