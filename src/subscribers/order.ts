@@ -166,7 +166,7 @@ export default async function orderPlacedHandler({
         .font("Times-Roman")
         .fillColor("#777777")
         .text(
-            "Pri plačilu se sklicujte na številko računa. Prosimo, da račun poravnate do valute plačila. DDV ni obračunan na podlagi 1. odstavka 94. člena Zakona o davku na dodano vrednost.",
+            "Pri placilu se sklicujte na stevilko racuna. Prosimo, da racun poravnate do valute placila. DDV ni obracunan na podlagi 1. odstavka 94. clena Zakona o davku na dodano vrednost.",
             50,               // x position (left margin)
             doc.y,            // current y
             { align: "left", width: 500 } // full width minus margins
