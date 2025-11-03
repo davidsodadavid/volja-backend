@@ -53,7 +53,7 @@ export default async function orderPlacedHandler({
     const buffers: Buffer[] = []
 
     // const fontRegular = path.join(process.cwd(), "static", "fonts", "Oswald-Regular.ttf");
-    const fontPath = path.join(__dirname, "static/fonts/Oswald-Regular.ttf");
+    const fontPath = path.join(__dirname, "../../static/fonts/Oswald-Regular.ttf");
     doc.registerFont("Oswald", fontPath);
 
     // const fontBold = path.join(process.cwd(), "static", "fonts", "Oswald-SemiBold.ttf");
