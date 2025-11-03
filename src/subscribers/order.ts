@@ -11,6 +11,8 @@ export default async function orderPlacedHandler({
     const orderId = data.id
     const query = container.resolve("query")
 
+    console.log('1. radi')
+
     const { data: orders } = await query.graph({
         entity: "order",
         fields: [
@@ -41,6 +43,10 @@ export default async function orderPlacedHandler({
     const currentYear = new Date().getFullYear();
     const currentYearLastTwoDigits = currentYear % 100;
     const orderIdForSending = (order as any).display_id;
+
+
+    console.log('2. radi')
+
 
     // 🧾 --- PDF CREATION ---
     const doc = new PDFDocument({ margin: 50 })
@@ -90,6 +96,7 @@ export default async function orderPlacedHandler({
 
     // ============ ITEMS ============
 
+    console.log('3. radi')
     const tableTop = doc.y
     const itemX = 50
     const qtyX = 300
@@ -117,6 +124,8 @@ export default async function orderPlacedHandler({
         .stroke();
 
     let y = headerBottomY + 10; // Start items a bit below the border
+
+    console.log('4. radi')
 
     order.items?.forEach((item: any) => {
         const unitPrice = (item.unit_price ?? 0)
@@ -172,6 +181,8 @@ export default async function orderPlacedHandler({
     const pdfBuffer = await pdfGenerated
     const base64 = pdfBuffer.toString("base64")
 
+    console.log('5. radi')
+
     const notificationData = {
         channel: "email",
         template: process.env.ORDER_PLACED_TEMPLATE_ID || "",
@@ -204,12 +215,14 @@ export default async function orderPlacedHandler({
         ],
     }
 
+
+    console.log('6. radi')
     // 1️⃣ Send to customer
     await notificationModuleService.createNotifications({
         ...notificationData,
         to: order.email!,
     })
-
+    console.log('7. radi')
     // 2️⃣ Send copy to internal email
     await notificationModuleService.createNotifications({
         ...notificationData,
