@@ -31,9 +31,9 @@
     "@mikro-orm/knex": "6.4.3",
     "@mikro-orm/migrations": "6.4.3",
     "@mikro-orm/postgresql": "6.4.3",
-    "@rsc-labs/medusa-documents-v2": "^0.2.11",
     "awilix": "^8.0.1",
     "medusa-plugin-sendgrid": "^1.3.13",
+    "pdfkit": "^0.17.2",
     "pg": "^8.13.0"
   },
   "devDependencies": {
