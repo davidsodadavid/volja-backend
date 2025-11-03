@@ -8,8 +8,6 @@ export default async function fulfillmentShippedHandler({
     const shipmentId = data.id; // This is the fulfillment/shipment ID
 
 
-    console.log('uslo');
-    
     const query = container.resolve("query");
     const { data: [shipment] } = await query.graph({
         entity: "fulfillment",
