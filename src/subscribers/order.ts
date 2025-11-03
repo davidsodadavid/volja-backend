@@ -52,11 +52,11 @@ export default async function orderPlacedHandler({
     const doc = new PDFDocument({ margin: 50 })
     const buffers: Buffer[] = []
 
-    const fontRegular = path.join(process.cwd(), "static", "fonts", "Oswald-Regular.ttf");
-    doc.registerFont("Oswald", fontRegular);
+    // const fontRegular = path.join(process.cwd(), "static", "fonts", "Oswald-Regular.ttf");
+    doc.registerFont("Oswald", "./static/fonts/Oswald-Regular.ttf");
 
-    const fontBold = path.join(process.cwd(), "static", "fonts", "Oswald-SemiBold.ttf");
-    doc.registerFont("Oswald-Bold", fontRegular);
+    // const fontBold = path.join(process.cwd(), "static", "fonts", "Oswald-SemiBold.ttf");
+    // doc.registerFont("Oswald-Bold", fontRegular);
 
     doc.on("data", chunk => buffers.push(chunk))
     const pdfGenerated = new Promise<Buffer>(resolve => {
@@ -67,7 +67,7 @@ export default async function orderPlacedHandler({
     doc
         .fontSize(10)
         .fillColor("#000000")
-        .font("Oswald-Bold") // only for this line
+        .font("Oswald") // only for this line
         .text(`Invoice No: 000${orderIdForSending}-${currentYearLastTwoDigits}`)
         .font("Oswald")
         .text(`Date of issue: ${new Date(order.created_at).toLocaleDateString()}`)
@@ -76,7 +76,7 @@ export default async function orderPlacedHandler({
         .moveDown(1.5)
 
     doc
-        .font("Oswald-Bold") // only for this line
+        .font("Oswald") // only for this line
         .fontSize(10)
         .fillColor("#000000")
         .text("Atelje Volja d.o.o.", doc.page.width - 50 - 200, 50, { width: 200 });
@@ -107,7 +107,7 @@ export default async function orderPlacedHandler({
     doc
         .fontSize(10)
         .fillColor("#000000")
-        .font("Oswald-Bold")
+        .font("Oswald")
         .text("Description", itemX, tableTop)
         .text("Qty", qtyX, tableTop)
         .text("Price", priceX, tableTop)
