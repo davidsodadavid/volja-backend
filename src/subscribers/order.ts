@@ -16,7 +16,7 @@ export default async function orderPlacedHandler({
 
     // Configure R2 client
     const s3 = new AWS.S3({
-        endpoint: "https://<account-id>.r2.cloudflarestorage.com",
+        endpoint: process.env.S3_ENDPOINT,
         accessKeyId: process.env.R2_ACCESS_KEY,
         secretAccessKey: process.env.R2_SECRET_KEY,
         region: "auto",
