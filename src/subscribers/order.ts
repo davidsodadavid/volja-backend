@@ -35,7 +35,6 @@ export default async function orderPlacedHandler({
     }
 
     const Oswald = await fetchFontFromR2("fonts/oswald.ttf");
-    console.log(Oswald, 'xD')
 
     const { data: orders } = await query.graph({
         entity: "order",
@@ -76,13 +75,6 @@ export default async function orderPlacedHandler({
     const doc = new PDFDocument({ margin: 50 })
     const buffers: Buffer[] = []
 
-    // const fontRegular = path.join(process.cwd(), "static", "fonts", "Oswald-Regular.ttf");
-    // const fontPath = path.join(__dirname, "../../static/fonts/Oswald-Regular.ttf");
-    // doc.registerFont("Oswald", fontPath);
-
-    // const fontBold = path.join(process.cwd(), "static", "fonts", "Oswald-SemiBold.ttf");
-    // doc.registerFont("Oswald-Bold", fontRegular);
-
     doc.on("data", chunk => buffers.push(chunk))
     const pdfGenerated = new Promise<Buffer>(resolve => {
         doc.on("end", () => resolve(Buffer.concat(buffers)))
@@ -92,21 +84,21 @@ export default async function orderPlacedHandler({
     doc
         .fontSize(10)
         .fillColor("#000000")
-        .font("Times-Roman") // only for this line
+        .font("Oswald") // only for this line
         .text(`Invoice No: 000${orderIdForSending}-${currentYearLastTwoDigits}`)
-        .font("Times-Roman")
+        .font("Oswald")
         .text(`Date of issue: ${new Date(order.created_at).toLocaleDateString()}`)
         .text(`Customer: ${order.shipping_address?.first_name ?? ""} ${order.shipping_address?.last_name ?? ""}`)
         .text(`Email: ${order.email}`)
         .moveDown(1.5)
 
     doc
-        .font("Times-Roman") // only for this line
+        .font("Oswald") // only for this line
         .fontSize(10)
         .fillColor("#000000")
         .text("Atelje Volja d.o.o.", doc.page.width - 50 - 200, 50, { width: 200 });
     doc
-        .font("Times-Roman") // only for this line
+        .font("Oswald") // only for this line
         .fontSize(10)
         .fillColor("#555555")
         .text("Njegoševa cesta, 6e", doc.page.width - 50 - 200, undefined, { width: 200 })
@@ -132,7 +124,7 @@ export default async function orderPlacedHandler({
     doc
         .fontSize(10)
         .fillColor("#000000")
-        .font("Times-Roman")
+        .font("Oswald")
         .text("Description", itemX, tableTop)
         .text("Qty", qtyX, tableTop)
         .text("Price", priceX, tableTop)
@@ -141,7 +133,7 @@ export default async function orderPlacedHandler({
     // Draw underline (border)
     const headerBottomY = tableTop + 20; // Adjust line height as needed
     doc
-        .font("Times-Roman")
+        .font("Oswald")
         .moveTo(itemX, headerBottomY)
         .lineTo(550, headerBottomY) // 550 is roughly page width minus margins
         .strokeColor("#000000") // or "#cccccc" for lighter line
@@ -187,7 +179,7 @@ export default async function orderPlacedHandler({
     // ============ FOOTER ============
     doc
         .fontSize(10)
-        .font("Times-Roman")
+        .font("Oswald")
         .fillColor("#777777")
         .text(
             "Pri plačilu se sklicujte na številko računa. Prosimo, da račun poravnate do valute plačila. DDV ni obračunan na podlagi 1. odstavka 94. clena Zakona o davku na dodano vrednost.",
