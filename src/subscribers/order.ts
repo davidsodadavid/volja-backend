@@ -1,7 +1,7 @@
 import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework"
 import PDFDocument from "pdfkit"
 import { Buffer } from "buffer"
-import path from "path";
+import AWS from "aws-sdk";
 
 export default async function orderPlacedHandler({
     event: { data },
@@ -12,6 +12,30 @@ export default async function orderPlacedHandler({
     const query = container.resolve("query")
 
     console.log('1. radi')
+
+
+    // Configure R2 client
+    const s3 = new AWS.S3({
+        endpoint: "https://<account-id>.r2.cloudflarestorage.com",
+        accessKeyId: process.env.R2_ACCESS_KEY,
+        secretAccessKey: process.env.R2_SECRET_KEY,
+        region: "auto",
+    });
+
+    async function fetchFontFromR2(fontKey: string): Promise<Buffer> {
+        const fontData = await s3
+            .getObject({
+                Bucket: process.env.R2_BUCKET_NAME!,
+                Key: fontKey,
+            })
+            .promise();
+
+        if (!fontData.Body) throw new Error("Font not found in R2");
+        return fontData.Body as Buffer;
+    }
+
+    const Oswald = await fetchFontFromR2("fonts/oswald.ttf");
+    console.log(Oswald, 'xD')
 
     const { data: orders } = await query.graph({
         entity: "order",
@@ -63,7 +87,7 @@ export default async function orderPlacedHandler({
     const pdfGenerated = new Promise<Buffer>(resolve => {
         doc.on("end", () => resolve(Buffer.concat(buffers)))
     })
-
+    doc.registerFont("Oswald", Oswald);
     // ============ HEADER ============
     doc
         .fontSize(10)
@@ -166,7 +190,7 @@ export default async function orderPlacedHandler({
         .font("Times-Roman")
         .fillColor("#777777")
         .text(
-            "Pri placilu se sklicujte na stevilko racuna. Prosimo, da racun poravnate do valute placila. DDV ni obracunan na podlagi 1. odstavka 94. clena Zakona o davku na dodano vrednost.",
+            "Pri plačilu se sklicujte na številko računa. Prosimo, da račun poravnate do valute plačila. DDV ni obračunan na podlagi 1. odstavka 94. clena Zakona o davku na dodano vrednost.",
             50,               // x position (left margin)
             doc.y,            // current y
             { align: "left", width: 500 } // full width minus margins
