@@ -25,7 +25,7 @@ export default async function orderPlacedHandler({
     async function fetchFontFromR2(fontKey: string): Promise<Buffer> {
         const fontData = await s3
             .getObject({
-                Bucket: process.env.R2_BUCKET_NAME!,
+                Bucket: process.env.S3_BUCKET!,
                 Key: fontKey,
             })
             .promise();
