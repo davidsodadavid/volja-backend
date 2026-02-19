@@ -235,13 +235,22 @@ const ProductWidget = ({
                         onChange={(e) => handleChange(index, "name", e.target.value)}
                         placeholder="Color Name"
                       />
-                      <Label className="font-bold">Color {index + 1} Hex:</Label>
-                      <Input
-                        type="text"
-                        value={color.hex}
-                        onChange={(e) => handleChange(index, "hex", e.target.value)}
-                        placeholder="#FFFFFF"
-                      />
+                      <Label className="font-bold">Color {index + 1}:</Label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="color"
+                          value={color.hex || "#ffffff"}
+                          onChange={(e) => handleChange(index, "hex", e.target.value)}
+                          className="h-9 w-9 cursor-pointer rounded border border-gray-300 p-0.5"
+                        />
+                        <Input
+                          type="text"
+                          value={color.hex}
+                          onChange={(e) => handleChange(index, "hex", e.target.value)}
+                          placeholder="#ffffff"
+                          className="w-28"
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
