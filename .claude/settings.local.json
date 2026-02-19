@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm list:*)",
+      "Bash(xargs:*)",
+      "Bash(pnpm install:*)",
+      "Bash(timeout 30 pnpm run dev:*)",
+      "Bash(pnpm add:*)",
+      "Bash(for pkg in \"@medusajs/admin-bundler\" \"@medusajs/admin-vite-plugin\")",
+      "Bash(do)",
+      "Bash(if [ ! -d \"node_modules/$pkg\" ])",
+      "Bash(then)",
+      "Bash(echo:*)",
+      "Bash(else)",
+      "Bash(fi)",
+      "Bash(done)"
+    ]
+  }
+}
