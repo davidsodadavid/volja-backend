@@ -28,7 +28,7 @@
     "@medusajs/admin-shared": "2.13.1",
     "@medusajs/admin-vite-plugin": "2.13.1",
     "@medusajs/dashboard": "2.13.1",
-    "@medusajs/draft-order": "^2.10.3",
+    "@medusajs/draft-order": "2.10.3",
     "@medusajs/file-local": "^2.10.3",
     "@medusajs/file-s3": "^2.10.3",
     "@medusajs/ui": "4.1.1",
