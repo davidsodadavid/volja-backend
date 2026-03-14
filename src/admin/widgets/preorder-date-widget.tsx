@@ -11,7 +11,7 @@ import {
 } from "@medusajs/ui"
 import { EllipsisHorizontal, PencilSquare } from "@medusajs/icons"
 import { DetailWidgetProps, AdminProduct } from "@medusajs/framework/types"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 const toDatetimeLocal = (d: Date) => {
   const pad = (n: number) => n.toString().padStart(2, "0")
@@ -19,38 +19,34 @@ const toDatetimeLocal = (d: Date) => {
 }
 
 const PreorderDateWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
-  const initialValue = (() => {
-    const val = data.metadata?.pre_order_date
-    if (val && (typeof val === "string" || typeof val === "number")) {
-      const d = new Date(val)
-      if (!isNaN(d.getTime())) return toDatetimeLocal(d)
-    }
-    return ""
-  })()
-
   const [open, setOpen] = useState(false)
-  const [saved, setSaved] = useState(initialValue)
-  const [draft, setDraft] = useState(initialValue)
+  const [saved, setSaved] = useState("")
+  const [draft, setDraft] = useState("")
   const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    fetch(`/admin/custom?product_id=${data.id}`)
+      .then((r) => r.json())
+      .then(({ pre_order }) => {
+        if (pre_order?.pre_order_date) {
+          const formatted = toDatetimeLocal(new Date(pre_order.pre_order_date))
+          setSaved(formatted)
+          setDraft(formatted)
+        }
+      })
+      .catch(() => {})
+  }, [data.id])
 
   const handleSave = async () => {
     setSaving(true)
     try {
-      const mergedDate = draft ? new Date(draft) : null
-
-      const currentRes = await fetch(`/admin/products/${data.id}`)
-      if (!currentRes.ok) throw new Error("Failed to fetch product")
-      const currentData = await currentRes.json()
-
-      const updatedMetadata = {
-        ...(currentData.product.metadata || {}),
-        pre_order_date: mergedDate ? mergedDate.toLocaleString("sv-SE") : null,
-      }
-
-      const res = await fetch(`/admin/products/${data.id}`, {
+      const res = await fetch(`/admin/custom`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ metadata: updatedMetadata }),
+        body: JSON.stringify({
+          product_id: data.id,
+          pre_order_date: draft ? new Date(draft).toISOString() : null,
+        }),
       })
 
       if (!res.ok) throw new Error("Failed to save")

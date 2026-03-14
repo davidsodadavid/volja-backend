@@ -1,41 +1,25 @@
-// src/workflows/create-custom.ts
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
+import { CUSTOM_MODULE } from "../../modules/custom"
 import CustomModuleService from "../../modules/custom/service"
 
-// Module key
-export const CUSTOM_MODULE = "custom"
-
-// Step input type
 export type CreateCustomStepInput = {
-  coming_soon?: boolean
-  product_id: string
+  pre_order_date?: string | null
 }
 
 export const createCustomStep = createStep(
-  "create-custom",
+  "create-custom-step",
   async (data: CreateCustomStepInput, { container }) => {
-    if (!data.coming_soon) {
-      return
-    }
+    const customService: CustomModuleService = container.resolve(CUSTOM_MODULE)
 
-    // Resolve your custom module service
-    const customModuleService: CustomModuleService = container.resolve(
-      CUSTOM_MODULE
-    )
-
-    // Create the custom entity in DB
-    const custom = await customModuleService.createCustoms({
-      coming_soon: data.coming_soon,
-      product_id: data.product_id,
+    const custom = await customService.createCustoms({
+      pre_order_date: data.pre_order_date ? new Date(data.pre_order_date) : null,
     })
 
-    return new StepResponse(custom, custom)
+    return new StepResponse(custom, custom.id)
   },
-  async (custom, { container }) => {
-    // Optional rollback: delete the custom entity if needed
-    const customModuleService: CustomModuleService = container.resolve(
-      CUSTOM_MODULE
-    )
-    if (custom) await customModuleService.deleteCustoms(custom.id)
+  async (customId: string, { container }) => {
+    if (!customId) return
+    const customService: CustomModuleService = container.resolve(CUSTOM_MODULE)
+    await customService.deleteCustoms(customId)
   }
 )

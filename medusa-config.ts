@@ -5,6 +5,25 @@ loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
 // const path = require("path")
 
+const REDIS_URL = process.env.REDIS_URL
+
+const redisModules = REDIS_URL
+  ? [
+      {
+        resolve: "@medusajs/medusa/cache-redis",
+        options: { redisUrl: REDIS_URL },
+      },
+      {
+        resolve: "@medusajs/medusa/event-bus-redis",
+        options: { redisUrl: REDIS_URL },
+      },
+      {
+        resolve: "@medusajs/medusa/workflow-engine-redis",
+        options: { redis: { redisUrl: REDIS_URL } },
+      },
+    ]
+  : []
+
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
@@ -16,7 +35,7 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
     workerMode: process.env.MEDUSA_WORKER_MODE as "shared" | "worker" | "server",
-    redisUrl: process.env.REDIS_URL,
+    redisUrl: REDIS_URL,
   },
   admin: {
     disable: process.env.DISABLE_MEDUSA_ADMIN === "true",
@@ -60,26 +79,7 @@ module.exports = defineConfig({
       },
     },
 
-    {
-      resolve: "@medusajs/medusa/cache-redis",
-      options: {
-        redisUrl: process.env.REDIS_URL,
-      },
-    },
-    {
-      resolve: "@medusajs/medusa/event-bus-redis",
-      options: {
-        redisUrl: process.env.REDIS_URL,
-      },
-    },
-    {
-      resolve: "@medusajs/medusa/workflow-engine-redis",
-      options: {
-        redis: {
-          url: process.env.REDIS_URL,
-        },
-      },
-    },
+    ...redisModules,
     {
       resolve: "@medusajs/medusa/file",
       options: {

@@ -2,8 +2,7 @@ import { model } from "@medusajs/framework/utils"
 
 const Custom = model.define("custom", {
   id: model.id().primaryKey(),
-  coming_soon: model.boolean(),
-  product_id: model.text(), 
+  pre_order_date: model.dateTime().nullable(),
 })
 
 export default Custom

@@ -3,8 +3,6 @@ import Custom from "./models/custom"
 
 class CustomModuleService extends MedusaService({
   Custom,
-}){
-}
+}) {}
 
 export default CustomModuleService
-export * from "./links"
