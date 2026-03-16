@@ -28,6 +28,8 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       "thumbnail",
       "images.*",
       "variants.*",
+      "variants.inventory_quantity",
+      "variants.calculated_price",  // <-- needs context below
       "custom.*",
     ],
   })
