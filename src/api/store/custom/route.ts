@@ -17,8 +17,6 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     return res.json({ products: [] })
   }
 
-  const preOrderMap = new Map(preOrders.map((c) => [c.id, c.pre_order_date]))
-
   const { data: products } = await query.graph({
     entity: "product",
     fields: [
@@ -36,18 +34,5 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       currency_code: (req.query.currency_code as string) ?? "eur",
     },
   })
-
-  const preOrderProducts = products
-    .filter((p: any) => p.custom?.id && preOrderMap.has(p.custom.id))
-    .sort((a: any, b: any) => {
-      const aDate = new Date(preOrderMap.get(a.custom.id)!).getTime()
-      const bDate = new Date(preOrderMap.get(b.custom.id)!).getTime()
-      return bDate - aDate
-    })
-    .map((p: any) => ({
-      ...p,
-      pre_order_date: preOrderMap.get(p.custom.id),
-    }))
-
-  res.json({ products: preOrderProducts })
+  res.json({ products })
 }
