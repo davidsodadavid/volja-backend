@@ -29,9 +29,12 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       "images.*",
       "variants.*",
       "variants.inventory_quantity",
-      "variants.calculated_price",  // <-- needs context below
+      "variants.calculated_price",
       "custom.*",
     ],
+    context: {
+      currency_code: (req.query.currency_code as string) ?? "eur",
+    },
   })
 
   const preOrderProducts = products
