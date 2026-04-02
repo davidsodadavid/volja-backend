@@ -12,10 +12,10 @@ import {
   toast,
 } from "@medusajs/ui"
 import { EllipsisHorizontal, PencilSquare } from "@medusajs/icons"
-import { DetailWidgetProps, AdminProductVariant } from "@medusajs/framework/types"
+import { DetailWidgetProps, AdminProduct } from "@medusajs/framework/types"
 import { useState } from "react"
 
-const VariantBgColorWidget = ({ data }: DetailWidgetProps<AdminProductVariant>) => {
+const ProductBgColorWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
   const initialColor = (() => {
     const val = data.metadata?.bg_color
     return typeof val === "string" ? val : "#ffffff"
@@ -29,16 +29,16 @@ const VariantBgColorWidget = ({ data }: DetailWidgetProps<AdminProductVariant>) 
   const handleSave = async () => {
     setSaving(true)
     try {
-      const currentRes = await fetch(`/admin/products/${data.product_id}/variants/${data.id}`)
-      if (!currentRes.ok) throw new Error("Failed to fetch variant")
+      const currentRes = await fetch(`/admin/products/${data.id}`)
+      if (!currentRes.ok) throw new Error("Failed to fetch product")
       const currentData = await currentRes.json()
 
-      const res = await fetch(`/admin/products/${data.product_id}/variants/${data.id}`, {
+      const res = await fetch(`/admin/products/${data.id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           metadata: {
-            ...(currentData.variant?.metadata || {}),
+            ...(currentData.product?.metadata || {}),
             bg_color: draft,
           },
         }),
@@ -137,7 +137,7 @@ const VariantBgColorWidget = ({ data }: DetailWidgetProps<AdminProductVariant>) 
 }
 
 export const config = defineWidgetConfig({
-  zone: "product_variant.details.side.before",
+  zone: "product.details.side.before",
 })
 
-export default VariantBgColorWidget
+export default ProductBgColorWidget
