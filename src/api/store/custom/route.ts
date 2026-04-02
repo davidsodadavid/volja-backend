@@ -49,12 +49,23 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
 
   const { data: variantsWithInventory } = await query.graph({
     entity: "variant",
-    fields: ["id", "+inventory_quantity"],
+    fields: [
+      "id",
+      "inventory_items.inventory.location_levels.stocked_quantity",
+      "inventory_items.inventory.location_levels.reserved_quantity",
+    ],
     filters: { id: variantIds },
   })
 
   const inventoryMap = new Map(
-    variantsWithInventory.map((v: any) => [v.id, v.inventory_quantity ?? 0])
+    variantsWithInventory.map((v: any) => {
+      const qty = (v.inventory_items ?? []).reduce((sum: number, ii: any) => {
+        return sum + (ii.inventory?.location_levels ?? []).reduce((s: number, l: any) => {
+          return s + ((l.stocked_quantity ?? 0) - (l.reserved_quantity ?? 0))
+        }, 0)
+      }, 0)
+      return [v.id, qty]
+    })
   )
 
   const result = products
@@ -68,7 +79,16 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       variants: p.variants.map((v: any) => {
         const qty = inventoryMap.get(v.id) ?? 0
         const available = !v.manage_inventory || v.allow_backorder || qty > 0
-        return { ...v, available }
+        return {
+          ...v,
+          metadata: {
+            color: "#ffffff",
+            size: "M",
+            bg_color: "#ffffff",
+            ...(v.metadata || {}),
+          },
+          available,
+        }
       }),
     }))
 

@@ -15,9 +15,9 @@ import { EllipsisHorizontal, PencilSquare } from "@medusajs/icons"
 import { DetailWidgetProps, AdminProductVariant } from "@medusajs/framework/types"
 import { useState } from "react"
 
-const VariantColorWidget = ({ data }: DetailWidgetProps<AdminProductVariant>) => {
+const VariantBgColorWidget = ({ data }: DetailWidgetProps<AdminProductVariant>) => {
   const initialColor = (() => {
-    const val = data.metadata?.color
+    const val = data.metadata?.bg_color
     return typeof val === "string" ? val : "#ffffff"
   })()
 
@@ -29,13 +29,17 @@ const VariantColorWidget = ({ data }: DetailWidgetProps<AdminProductVariant>) =>
   const handleSave = async () => {
     setSaving(true)
     try {
+      const currentRes = await fetch(`/admin/products/${data.product_id}/variants/${data.id}`)
+      if (!currentRes.ok) throw new Error("Failed to fetch variant")
+      const currentData = await currentRes.json()
+
       const res = await fetch(`/admin/products/${data.product_id}/variants/${data.id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           metadata: {
-            ...(data.metadata || {}),
-            color: draft,
+            ...(currentData.variant?.metadata || {}),
+            bg_color: draft,
           },
         }),
       })
@@ -43,9 +47,9 @@ const VariantColorWidget = ({ data }: DetailWidgetProps<AdminProductVariant>) =>
 
       setSaved(draft)
       setOpen(false)
-      toast.success("Success", { description: "Color saved!" })
+      toast.success("Success", { description: "Background color saved!" })
     } catch (e: any) {
-      alert("Error: " + e.message)
+      toast.error("Error", { description: e.message })
     } finally {
       setSaving(false)
     }
@@ -54,7 +58,7 @@ const VariantColorWidget = ({ data }: DetailWidgetProps<AdminProductVariant>) =>
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">Variant Color</Heading>
+        <Heading level="h2">Background Color</Heading>
 
         <DropdownMenu>
           <DropdownMenu.Trigger asChild>
@@ -90,12 +94,12 @@ const VariantColorWidget = ({ data }: DetailWidgetProps<AdminProductVariant>) =>
       <Drawer open={open} onOpenChange={setOpen}>
         <Drawer.Content>
           <Drawer.Header>
-            <Drawer.Title>Edit Variant Color</Drawer.Title>
+            <Drawer.Title>Edit Background Color</Drawer.Title>
           </Drawer.Header>
 
           <Drawer.Body className="flex flex-col gap-y-4 p-6">
             <div className="flex flex-col gap-y-2">
-              <Label size="small" weight="plus">Color</Label>
+              <Label size="small" weight="plus">Background Color</Label>
               <div className="flex items-center gap-x-3">
                 <input
                   type="color"
@@ -136,4 +140,4 @@ export const config = defineWidgetConfig({
   zone: "product_variant.details.side.before",
 })
 
-export default VariantColorWidget
+export default VariantBgColorWidget

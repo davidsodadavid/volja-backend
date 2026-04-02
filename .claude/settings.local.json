@@ -18,7 +18,20 @@
       "mcp__plugin_context7_context7__query-docs",
       "Bash(grep:*)",
       "WebSearch",
-      "WebFetch(domain:docs.medusajs.com)"
+      "WebFetch(domain:docs.medusajs.com)",
+      "Bash(find /c/Projects/volja-backend/src/admin -type f \\\\\\(-name *.ts -o -name *.tsx -o -name *.js -o -name *.jsx \\\\\\))",
+      "Bash(find /c/Projects/volja-backend/src/modules -type f -name *.ts -o -name *.tsx)",
+      "Bash(find /c/Projects/volja-backend -maxdepth 2 -name package.json -o -name medusa-config.* -o -name *.config.*)",
+      "Bash(PGPASSWORD='lolCINA!23' psql:*)",
+      "Bash(where psql:*)",
+      "Bash(PGPASSWORD='lolCINA!23' /c/Program Files/PostgreSQL/16/bin/psql:*)",
+      "Bash(npm show:*)",
+      "Bash(pnpm show:*)",
+      "Bash(rm \"C:/Projects/volja-backend/src/api/admin/products/[id]/variants/route.ts\")",
+      "Bash(rmdir \"C:/Projects/volja-backend/src/api/admin/products/[id]/variants\")",
+      "Bash(rmdir \"C:/Projects/volja-backend/src/api/admin/products/[id]\")",
+      "Bash(pnpm update:*)",
+      "Bash(pnpm medusa:*)"
     ]
   }
 }
