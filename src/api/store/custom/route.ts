@@ -26,8 +26,6 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     fields: [
       "id",
       "title",
-      'subtitle',
-      'material',
       "description",
       "handle",
       "thumbnail",
