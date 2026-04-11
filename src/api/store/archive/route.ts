@@ -7,6 +7,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const limit = Number(req.query.limit ?? 20)
   const offset = Number(req.query.offset ?? 0)
   const currency_code = (req.query.currency_code as string) ?? "eur"
+  const region_id = req.query.region_id as string | undefined
 
   const { data: customs } = await query.graph({
     entity: "custom",
@@ -43,7 +44,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     filters: { id: productIds },
     context: {
       variants: {
-        calculated_price: QueryContext({ currency_code }),
+        calculated_price: QueryContext({ currency_code, region_id }),
       },
     },
   })
