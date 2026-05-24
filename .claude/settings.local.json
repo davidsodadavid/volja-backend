@@ -31,7 +31,14 @@
       "Bash(rmdir \"C:/Projects/volja-backend/src/api/admin/products/[id]/variants\")",
       "Bash(rmdir \"C:/Projects/volja-backend/src/api/admin/products/[id]\")",
       "Bash(pnpm update:*)",
-      "Bash(pnpm medusa:*)"
+      "Bash(pnpm medusa:*)",
+      "Bash(npm install *)",
+      "PowerShell(npm install *)",
+      "PowerShell(pnpm *)",
+      "PowerShell($env:PGPASSWORD=\"lolCINA!23\"; & \"C:\\\\Program Files\\\\PostgreSQL\\\\16\\\\bin\\\\psql.exe\" \"postgresql://postgres:lolCINA!23@localhost:5432/medusa-my-medusa-store\" -c \"SELECT 1;\" 2>&1)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Projects\\\\volja-frontend\" -Depth 1)",
+      "Bash(Select-Object Name)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Projects\\\\volja-frontend\" -Depth 0 | Where-Object {$_.Name -notlike \"node_modules\"} | Select-Object Name)"
     ]
   }
 }
