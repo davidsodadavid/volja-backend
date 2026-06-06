@@ -1,6 +1,5 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { z } from "zod"
-import { RecaptchaEnterpriseServiceClient } from "@google-cloud/recaptcha-enterprise"
 import { CUSTOM_MODULE } from "../../../modules/custom"
 import CustomModuleService from "../../../modules/custom/service"
 
@@ -9,46 +8,18 @@ const SubscribeSchema = z.object({
   token: z.string().min(1),
 })
 
-// Cached at module level per Google's recommendation
-let recaptchaClient: RecaptchaEnterpriseServiceClient | null = null
-function getRecaptchaClient() {
-  if (!recaptchaClient) {
-    recaptchaClient = new RecaptchaEnterpriseServiceClient()
-  }
-  return recaptchaClient
-}
-
-async function verifyRecaptcha(token: string): Promise<boolean> {
-  const projectID = process.env.RECAPTCHA_PROJECT_ID
-  const recaptchaKey = process.env.RECAPTCHA_SITE_KEY
-
-  if (!projectID || !recaptchaKey) {
-    throw new Error("RECAPTCHA_PROJECT_ID and RECAPTCHA_SITE_KEY must be set.")
+async function verifyTurnstile(token: string): Promise<boolean> {
+  const secret = process.env.TURNSTILE_SECRET_KEY
+  if (!secret) {
+    throw new Error("TURNSTILE_SECRET_KEY must be set.")
   }
 
-  const client = getRecaptchaClient()
-  const projectPath = client.projectPath(projectID)
-
-  const [response] = await client.createAssessment({
-    assessment: {
-      event: {
-        token,
-        siteKey: recaptchaKey,
-      },
-    },
-    parent: projectPath,
+  const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+    method: "POST",
+    body: new URLSearchParams({ secret, response: token }),
   })
-
-  if (!response.tokenProperties?.valid) {
-    return false
-  }
-
-  if (response.tokenProperties.action !== "subscribe") {
-    return false
-  }
-
-  const score = response.riskAnalysis?.score ?? 0
-  return score >= 0.5
+  const data = await res.json() as { success: boolean }
+  return data.success
 }
 
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
@@ -59,7 +30,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
 
   const { email, token } = parsed.data
 
-  const passed = await verifyRecaptcha(token)
+  const passed = await verifyTurnstile(token)
   if (!passed) {
     return res.status(400).json({ error: "Captcha verification failed." })
   }

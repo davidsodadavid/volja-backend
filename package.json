@@ -23,7 +23,6 @@
     "predeploy": "medusa db:migrate"
   },
   "dependencies": {
-    "@google-cloud/recaptcha-enterprise": "^6.4.1",
     "@medusajs/admin-bundler": "2.13.1",
     "@medusajs/admin-sdk": "^2.13.5",
     "@medusajs/admin-shared": "2.13.1",
