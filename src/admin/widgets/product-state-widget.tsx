@@ -8,30 +8,46 @@ import {
   Drawer,
   DropdownMenu,
   IconButton,
+  Select,
 } from "@medusajs/ui"
 import { EllipsisHorizontal, PencilSquare } from "@medusajs/icons"
 import { DetailWidgetProps, AdminProduct } from "@medusajs/framework/types"
 import { useState, useEffect } from "react"
+
+const STATE_LABELS: Record<string, string> = {
+  IN_PROGRESS: "In Progress",
+  PREORDER: "Pre-order",
+  SHOP: "Shop",
+  ARCHIVE: "Archive",
+}
+
+const STATES = Object.keys(STATE_LABELS)
 
 const toDatetimeLocal = (d: Date) => {
   const pad = (n: number) => n.toString().padStart(2, "0")
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
-const PreorderDateWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
+const ProductStateWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
   const [open, setOpen] = useState(false)
-  const [saved, setSaved] = useState("")
-  const [draft, setDraft] = useState("")
+  const [savedState, setSavedState] = useState("SHOP")
+  const [savedDate, setSavedDate] = useState("")
+  const [draftState, setDraftState] = useState("SHOP")
+  const [draftDate, setDraftDate] = useState("")
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     fetch(`/admin/custom?product_id=${data.id}`)
       .then((r) => r.json())
       .then(({ pre_order }) => {
+        if (pre_order?.state) {
+          setSavedState(pre_order.state)
+          setDraftState(pre_order.state)
+        }
         if (pre_order?.pre_order_date) {
           const formatted = toDatetimeLocal(new Date(pre_order.pre_order_date))
-          setSaved(formatted)
-          setDraft(formatted)
+          setSavedDate(formatted)
+          setDraftDate(formatted)
         }
       })
       .catch(() => {})
@@ -45,13 +61,17 @@ const PreorderDateWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           product_id: data.id,
-          pre_order_date: draft ? new Date(draft).toISOString() : null,
+          state: draftState,
+          pre_order_date: draftState === "PREORDER" && draftDate
+            ? new Date(draftDate).toISOString()
+            : null,
         }),
       })
 
       if (!res.ok) throw new Error("Failed to save")
 
-      setSaved(draft)
+      setSavedState(draftState)
+      setSavedDate(draftState === "PREORDER" ? draftDate : "")
       setOpen(false)
     } catch (err: any) {
       alert("Error: " + err.message)
@@ -60,20 +80,20 @@ const PreorderDateWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
     }
   }
 
-  const formattedDate = saved
-    ? new Date(saved).toLocaleString("en-GB", {
+  const formattedDate = savedDate
+    ? new Date(savedDate).toLocaleString("en-GB", {
         day: "2-digit",
         month: "short",
         year: "numeric",
         hour: "2-digit",
         minute: "2-digit",
       })
-    : "Not set"
+    : null
 
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">Preorder Date</Heading>
+        <Heading level="h2">Product State</Heading>
 
         <DropdownMenu>
           <DropdownMenu.Trigger asChild>
@@ -85,7 +105,8 @@ const PreorderDateWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
             <DropdownMenu.Item
               className="gap-x-2"
               onClick={() => {
-                setDraft(saved)
+                setDraftState(savedState)
+                setDraftDate(savedDate)
                 setOpen(true)
               }}
             >
@@ -96,30 +117,51 @@ const PreorderDateWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
         </DropdownMenu>
       </div>
 
-      <div className="px-6 py-4">
+      <div className="px-6 py-4 flex flex-col gap-y-1">
         <Text size="small" className="text-ui-fg-subtle">
-          {formattedDate}
+          {STATE_LABELS[savedState] ?? savedState}
         </Text>
+        {savedState === "PREORDER" && (
+          <Text size="small" className="text-ui-fg-muted">
+            {formattedDate ?? "No date set"}
+          </Text>
+        )}
       </div>
 
       <Drawer open={open} onOpenChange={setOpen}>
         <Drawer.Content>
           <Drawer.Header>
-            <Drawer.Title>Edit Preorder Date</Drawer.Title>
+            <Drawer.Title>Edit Product State</Drawer.Title>
           </Drawer.Header>
 
           <Drawer.Body className="flex flex-col gap-y-4 p-6">
             <div className="flex flex-col gap-y-2">
-              <Label size="small" weight="plus">
-                Date & Time
-              </Label>
-              <input
-                type="datetime-local"
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                className="flex h-8 w-full rounded-md border border-ui-border-base bg-ui-bg-field px-3 py-1.5 text-ui-fg-base shadow-buttons-neutral transition-fg outline-none focus:shadow-details-switch-background text-sm"
-              />
+              <Label size="small" weight="plus">State</Label>
+              <Select value={draftState} onValueChange={setDraftState}>
+                <Select.Trigger>
+                  <Select.Value />
+                </Select.Trigger>
+                <Select.Content>
+                  {STATES.map((s) => (
+                    <Select.Item key={s} value={s}>
+                      {STATE_LABELS[s]}
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select>
             </div>
+
+            {draftState === "PREORDER" && (
+              <div className="flex flex-col gap-y-2">
+                <Label size="small" weight="plus">Preorder Date & Time</Label>
+                <input
+                  type="datetime-local"
+                  value={draftDate}
+                  onChange={(e) => setDraftDate(e.target.value)}
+                  className="flex h-8 w-full rounded-md border border-ui-border-base bg-ui-bg-field px-3 py-1.5 text-ui-fg-base shadow-buttons-neutral transition-fg outline-none focus:shadow-details-switch-background text-sm"
+                />
+              </div>
+            )}
           </Drawer.Body>
 
           <Drawer.Footer>
@@ -144,4 +186,4 @@ export const config = defineWidgetConfig({
   zone: "product.details.side.before",
 })
 
-export default PreorderDateWidget
+export default ProductStateWidget

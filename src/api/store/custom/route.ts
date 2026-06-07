@@ -7,7 +7,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const { data: customs } = await query.graph({
     entity: "custom",
     fields: ["id", "pre_order_date", "product.id"],
-    filters: { pre_order_date: { $ne: null } },
+    filters: { state: ["PREORDER", "IN_PROGRESS"] },
   })
 
   if (!customs.length) {

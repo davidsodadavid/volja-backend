@@ -21,9 +21,10 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
 }
 
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
-  const { product_id, pre_order_date } = req.body as {
+  const { product_id, pre_order_date, state } = req.body as {
     product_id: string
-    pre_order_date: string | null
+    pre_order_date?: string | null
+    state?: string | null
   }
 
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
@@ -41,13 +42,15 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
   if (existing?.id) {
     const updated = await customService.updateCustoms({
       id: existing.id,
-      pre_order_date: pre_order_date ? new Date(pre_order_date) : null,
+      ...(pre_order_date !== undefined && { pre_order_date: pre_order_date ? new Date(pre_order_date) : null }),
+      ...(state !== undefined && { state }),
     })
     return res.json({ pre_order: updated })
   }
 
   const custom = await customService.createCustoms({
     pre_order_date: pre_order_date ? new Date(pre_order_date) : null,
+    ...(state !== undefined && { state }),
   })
 
   await remoteLink.create([{
