@@ -2,6 +2,7 @@ import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import { CUSTOM_MODULE } from "../../../modules/custom"
 import CustomModuleService from "../../../modules/custom/service"
+import { ProductState } from "../../../modules/custom/models/custom"
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const { product_id } = req.query as { product_id?: string }
@@ -24,7 +25,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
   const { product_id, pre_order_date, state } = req.body as {
     product_id: string
     pre_order_date?: string | null
-    state?: string | null
+    state?: ProductState
   }
 
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
