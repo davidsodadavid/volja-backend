@@ -34,6 +34,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       "metadata",
       "images.*",
       "variants.*",
+      "variants.images.*",
       "variants.calculated_price.*",
       "custom.*",
     ],

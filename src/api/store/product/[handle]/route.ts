@@ -3,35 +3,15 @@ import { ContainerRegistrationKeys, QueryContext } from "@medusajs/framework/uti
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
-
-  const limit = Number(req.query.limit ?? 20)
-  const offset = Number(req.query.offset ?? 0)
-  const currency_code = (req.query.currency_code as string) ?? "eur"
-  const region_id = req.query.region_id as string | undefined
-
-  const { data: customs } = await query.graph({
-    entity: "custom",
-    fields: ["id", "pre_order_date", "product.id"],
-    filters: { pre_order_date: null },
-  })
-
-  if (!customs.length) {
-    return res.json({ products: [], count: 0, limit, offset })
-  }
-
-  const productIds = (customs as any[]).map((c) => c.product?.id).filter(Boolean)
-
-  if (!productIds.length) {
-    return res.json({ products: [], count: 0, limit, offset })
-  }
+  const handle = req.params.handle
 
   const { data: products } = await query.graph({
     entity: "product",
     fields: [
       "id",
       "title",
-      'subtitle',
-      'material',
+      "subtitle",
+      "material",
       "description",
       "handle",
       "thumbnail",
@@ -42,15 +22,25 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       "variants.calculated_price.*",
       "custom.*",
     ],
-    filters: { id: productIds },
+    filters: { handle },
     context: {
       variants: {
-        calculated_price: QueryContext({ currency_code, region_id }),
+        calculated_price: QueryContext({
+          currency_code: (req.query.currency_code as string) ?? "eur",
+        }),
       },
     },
   })
 
-  const variantIds = products.flatMap((p: any) => p.variants.map((v: any) => v.id))
+  if (!products.length) {
+    return res.status(404).json({ product: null })
+  }
+
+  const product = products[0] as any
+
+  const pre_order_date = (product.custom as any)?.pre_order_date ?? null
+
+  const variantIds = product.variants.map((v: any) => v.id)
 
   const { data: variantsWithInventory } = await query.graph({
     entity: "variant",
@@ -73,20 +63,12 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     })
   )
 
-  const inStockProducts = products.filter((p: any) =>
-    p.variants.some((v: any) => {
+  const result = {
+    ...product,
+    pre_order_date,
+    variants: product.variants.map((v: any) => {
       const qty = inventoryMap.get(v.id) ?? 0
-      return !v.manage_inventory || v.allow_backorder || qty > 0
-    })
-  )
-
-  const count = inStockProducts.length
-  const paginated = inStockProducts.slice(offset, offset + limit)
-
-  const result = paginated.map((p: any) => ({
-    ...p,
-    variants: p.variants.map((v: any) => {
-      const qty = inventoryMap.get(v.id) ?? 0
+      const available = !v.manage_inventory || v.allow_backorder || qty > 0
       return {
         ...v,
         metadata: {
@@ -95,10 +77,10 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
           bg_color: "#ffffff",
           ...(v.metadata || {}),
         },
-        available: !v.manage_inventory || v.allow_backorder || qty > 0,
+        available,
       }
     }),
-  }))
+  }
 
-  res.json({ products: result, count, limit, offset })
+  res.json({ product: result })
 }
