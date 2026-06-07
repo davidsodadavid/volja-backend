@@ -59,6 +59,13 @@ module.exports = defineConfig({
               from: "Atelje Volja <info@ateljevolja.si>",
             },
           },
+          {
+            resolve: "@medusajs/medusa/notification-local",
+            id: "local",
+            options: {
+              channels: ["feed"],
+            },
+          },
         ],
       },
     },
