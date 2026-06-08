@@ -12,7 +12,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const { data: customs } = await query.graph({
     entity: "custom",
     fields: ["id", "pre_order_date", "product.id"],
-    filters: { pre_order_date: null },
+    filters: { state: "ARCHIVE" },
   })
 
   if (!customs.length) {
@@ -38,6 +38,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       "metadata",
       "images.*",
       "variants.*",
+      "variants.images.*",
       "variants.calculated_price.*",
       "custom.*",
     ],
@@ -72,16 +73,8 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     })
   )
 
-  const archivedProducts = products.filter((p: any) =>
-    p.variants.length > 0 &&
-    p.variants.every((v: any) => {
-      const qty = inventoryMap.get(v.id) ?? 0
-      return v.manage_inventory && !v.allow_backorder && qty <= 0
-    })
-  )
-
-  const count = archivedProducts.length
-  const paginated = archivedProducts.slice(offset, offset + limit)
+  const count = products.length
+  const paginated = products.slice(offset, offset + limit)
 
   const result = paginated.map((p: any) => ({
     ...p,

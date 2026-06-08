@@ -33,6 +33,7 @@ module.exports = defineConfig({
       authCors: process.env.AUTH_CORS!,
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
+      uploadFileSizeLimit: 5 * 1024 * 1024,
     },
     workerMode: process.env.MEDUSA_WORKER_MODE as "shared" | "worker" | "server",
     redisUrl: REDIS_URL,
