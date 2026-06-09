@@ -45,7 +45,9 @@
       "PowerShell(cat \"C:\\\\Projects\\\\volja-backend\\\\node_modules\\\\.pnpm\\\\@medusajs+medusa@2.13.5_@me_9a3b35b956258e604f5c434b015ceeaa\\\\node_modules\\\\@medusajs\\\\medusa\\\\package.json\" | python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\({k:v for k,v in d.get\\('dependencies',{}\\).items\\(\\) if 'mikro-orm' in k}\\)\")",
       "PowerShell(Get-ChildItem \"C:\\\\Projects\\\\volja-backend\\\\node_modules\\\\.pnpm\" -Directory | Where-Object { $_.Name -match \"mikro-orm\\\\+core\" } | Select-Object Name)",
       "PowerShell(Get-ChildItem \"C:\\\\Projects\\\\volja-backend\\\\node_modules\\\\.pnpm\" -Directory | Where-Object { $_.Name -match \"mikro-orm\" } | Select-Object Name | Select-Object -First 20)",
-      "PowerShell(Get-Content *)"
+      "PowerShell(Get-Content *)",
+      "PowerShell(npx tsc --noEmit 2>&1 | Select-Object -First 20)",
+      "PowerShell(npx tsc --noEmit 2>&1 | Select-Object -First 10)"
     ]
   }
 }
