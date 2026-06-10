@@ -85,13 +85,13 @@ const SubscribersPage = () => {
         <Table.Body>
           {loading ? (
             <Table.Row>
-              <Table.Cell colSpan={2}>
+              <Table.Cell {...({ colSpan: 2 } as any)}>
                 <Text size="small" className="text-ui-fg-subtle">Loading...</Text>
               </Table.Cell>
             </Table.Row>
           ) : subscribers.length === 0 ? (
             <Table.Row>
-              <Table.Cell colSpan={2}>
+              <Table.Cell {...({ colSpan: 2 } as any)}>
                 <Text size="small" className="text-ui-fg-subtle">No subscribers yet.</Text>
               </Table.Cell>
             </Table.Row>

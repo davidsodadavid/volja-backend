@@ -29,7 +29,7 @@ export default async function fulfillmentShippedHandler({
     await notificationModuleService.createNotifications({
         to: shipment.order?.customer?.email!,
         channel: "email",
-        template: process.env.SHIPPING_TEMPLATE_ID || "",
+        template: "shipment-created",
         data: {
             tracking_number: shipment.labels[0].tracking_number,
             subject: "Order Shipped",

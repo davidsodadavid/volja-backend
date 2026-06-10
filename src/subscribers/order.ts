@@ -202,7 +202,7 @@ export default async function orderPlacedHandler({
 
     const notificationData = {
         channel: "email",
-        template: process.env.ORDER_PLACED_TEMPLATE_ID || "",
+        template: "order-placed",
         data: {
             total: order.total,
             subtotal: order.total - order.shipping_total,

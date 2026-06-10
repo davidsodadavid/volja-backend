@@ -52,12 +52,12 @@ module.exports = defineConfig({
       options: {
         providers: [
           {
-            resolve: "@medusajs/medusa/notification-sendgrid",
-            id: "sendgrid",
+            resolve: path.join(__dirname, "src/modules/resend"),
+            id: "resend",
             options: {
               channels: ["email"],
-              api_key: process.env.SENDGRID_API_KEY,
-              from: "Atelje Volja <info@ateljevolja.si>",
+              api_key: process.env.RESEND_API_KEY,
+              from: process.env.RESEND_FROM || "Atelje Volja <info@ateljevolja.si>",
             },
           },
           {
