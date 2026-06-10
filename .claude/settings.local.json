@@ -47,7 +47,19 @@
       "PowerShell(Get-ChildItem \"C:\\\\Projects\\\\volja-backend\\\\node_modules\\\\.pnpm\" -Directory | Where-Object { $_.Name -match \"mikro-orm\" } | Select-Object Name | Select-Object -First 20)",
       "PowerShell(Get-Content *)",
       "PowerShell(npx tsc --noEmit 2>&1 | Select-Object -First 20)",
-      "PowerShell(npx tsc --noEmit 2>&1 | Select-Object -First 10)"
+      "PowerShell(npx tsc --noEmit 2>&1 | Select-Object -First 10)",
+      "PowerShell($key = \\(Select-String -Path .env -Pattern '^RESEND_API_KEY=\\(.+\\)$'\\).Matches[0].Groups[1].Value; Invoke-RestMethod -Uri 'https://api.resend.com/domains' -Headers @{Authorization=\"Bearer $key\"} | ConvertTo-Json -Depth 5)",
+      "PowerShell($key = \\(Select-String -Path .env -Pattern '^RESEND_API_KEY=\\(.+\\)$'\\).Matches[0].Groups[1].Value; $body = @{from='Atelje Volja <info@ateljevolja.si>'; to=@\\('boyan.dedic@gmail.com'\\); subject='Volja test - diagnostics'; html='<p>Test email from Resend diagnostics</p>'} | ConvertTo-Json; try { Invoke-RestMethod -Uri 'https://api.resend.com/emails' -Method Post -Headers @{Authorization=\"Bearer $key\"; 'Content-Type'='application/json'} -Body $body | ConvertTo-Json } catch { $_.ErrorDetails.Message })",
+      "PowerShell(\\(Get-Content package.json -Raw | ConvertFrom-Json\\).dependencies | ConvertTo-Json; Test-Path node_modules/resend; Test-Path node_modules/handlebars)",
+      "PowerShell(npx medusa exec ./src/scripts/test-email.ts 2>&1 | Select-Object -Last 40)",
+      "PowerShell($db = \\(Select-String -Path .env -Pattern '^DATABASE_URL=\\(.+\\)$'\\).Matches[0].Groups[1].Value; npx --yes pg-query 2>$null; psql $db -c \"select id, \"\\\\\"\"to\"\\\\\"\", template, channel, status, provider_id, created_at from notification order by created_at desc limit 10;\" 2>&1)",
+      "PowerShell(node -e \"require\\('dotenv'\\).config\\(\\); const {Client}=require\\('pg'\\); const c=new Client\\({connectionString:process.env.DATABASE_URL}\\); c.connect\\(\\).then\\(async\\(\\)=>{ const r=await c.query\\('select \\\\\"to\\\\\", template, channel, status, provider_id, created_at from notification order by created_at desc limit 12'\\); console.table\\(r.rows\\); await c.end\\(\\); }\\).catch\\(e=>{console.error\\(e.message\\); process.exit\\(1\\)}\\)\")",
+      "PowerShell(node check-notifications.js)",
+      "PowerShell(git fetch *)",
+      "PowerShell(Resolve-DnsName *)",
+      "PowerShell(nslookup *)",
+      "PowerShell(Invoke-WebRequest -Uri 'https://r2.ateljevolja.si/static/volja-logo.webp' -Method Head | Select-Object StatusCode, @{n='ContentType';e={$_.Headers.'Content-Type'}}, @{n='Bytes';e={$_.Headers.'Content-Length'}})",
+      "PowerShell(Remove-Item *)"
     ]
   }
 }

@@ -1,6 +1,6 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk"
-import { EnvelopeSolid } from "@medusajs/icons"
-import { Container, Heading, Table, Text, Button, toast } from "@medusajs/ui"
+import { EnvelopeSolid, Trash } from "@medusajs/icons"
+import { Container, Heading, Table, Text, Button, IconButton, toast, usePrompt } from "@medusajs/ui"
 import { useEffect, useState } from "react"
 
 type Subscriber = {
@@ -12,6 +12,36 @@ type Subscriber = {
 const SubscribersPage = () => {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([])
   const [loading, setLoading] = useState(true)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const prompt = usePrompt()
+
+  const handleDelete = async (subscriber: Subscriber) => {
+    const confirmed = await prompt({
+      title: "Delete subscriber",
+      description: `Are you sure you want to remove ${subscriber.email} from the list? This cannot be undone.`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+    })
+    if (!confirmed) {
+      return
+    }
+
+    setDeletingId(subscriber.id)
+    try {
+      const res = await fetch(`/admin/subscribers/${subscriber.id}`, {
+        method: "DELETE",
+      })
+      if (!res.ok) {
+        throw new Error()
+      }
+      setSubscribers((prev) => prev.filter((s) => s.id !== subscriber.id))
+      toast.success(`Removed ${subscriber.email}.`)
+    } catch {
+      toast.error("Failed to delete subscriber.")
+    } finally {
+      setDeletingId(null)
+    }
+  }
 
   useEffect(() => {
     fetch("/admin/subscribers")
@@ -80,18 +110,19 @@ const SubscribersPage = () => {
           <Table.Row>
             <Table.HeaderCell>Email</Table.HeaderCell>
             <Table.HeaderCell>Subscribed at</Table.HeaderCell>
+            <Table.HeaderCell></Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {loading ? (
             <Table.Row>
-              <Table.Cell {...({ colSpan: 2 } as any)}>
+              <Table.Cell {...({ colSpan: 3 } as any)}>
                 <Text size="small" className="text-ui-fg-subtle">Loading...</Text>
               </Table.Cell>
             </Table.Row>
           ) : subscribers.length === 0 ? (
             <Table.Row>
-              <Table.Cell {...({ colSpan: 2 } as any)}>
+              <Table.Cell {...({ colSpan: 3 } as any)}>
                 <Text size="small" className="text-ui-fg-subtle">No subscribers yet.</Text>
               </Table.Cell>
             </Table.Row>
@@ -107,6 +138,16 @@ const SubscribersPage = () => {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
+                </Table.Cell>
+                <Table.Cell className="text-right">
+                  <IconButton
+                    size="small"
+                    variant="transparent"
+                    disabled={deletingId === s.id}
+                    onClick={() => handleDelete(s)}
+                  >
+                    <Trash />
+                  </IconButton>
                 </Table.Cell>
               </Table.Row>
             ))

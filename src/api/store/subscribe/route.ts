@@ -44,5 +44,18 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
 
   await customService.createEmailSubscribers({ email })
 
+  try {
+    const notificationModuleService = req.scope.resolve("notification")
+    await notificationModuleService.createNotifications({
+      to: email,
+      channel: "email",
+      template: "subscription-confirmed",
+      data: { email },
+    })
+  } catch (e) {
+    // The subscription itself succeeded — don't fail the request over the email.
+    req.scope.resolve("logger").error(`Failed to send subscription confirmation to ${email}: ${e.message}`)
+  }
+
   return res.status(201).json({ message: "Subscribed successfully." })
 }

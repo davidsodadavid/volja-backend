@@ -10,6 +10,11 @@ export const ORDER_PLACED_HTML = `<!DOCTYPE html>
         <td align="center">
           <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;padding:32px;">
             <tr>
+              <td align="center" style="padding-bottom:24px;">
+                <img src="https://r2.ateljevolja.si/static/volja-logo.webp" alt="Atelje Volja" width="140" style="display:block;width:140px;height:auto;border:0;" />
+              </td>
+            </tr>
+            <tr>
               <td>
                 <h1 style="font-size:20px;margin:0 0 16px;">Thank you for your order, {{customer.first_name}}!</h1>
                 <p style="margin:0 0 8px;">Invoice no: <strong>{{cart_id}}</strong></p>
