@@ -11,7 +11,7 @@ export const SHIPMENT_CREATED_HTML = `<!DOCTYPE html>
           <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;padding:32px;">
             <tr>
               <td align="center" style="padding-bottom:24px;">
-                <img src="https://r2.ateljevolja.si/static/volja-logo.webp" alt="Atelje Volja" width="140" style="display:block;width:140px;height:auto;border:0;" />
+                <img src="https://r2.ateljevolja.si/static/volja-logo.png" alt="Atelje Volja" width="140" style="display:block;width:140px;height:auto;border:0;" />
               </td>
             </tr>
             <tr>
