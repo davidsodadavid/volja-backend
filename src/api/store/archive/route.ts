@@ -42,7 +42,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       "variants.calculated_price.*",
       "custom.*",
     ],
-    filters: { id: productIds },
+    filters: { id: productIds, status: "published" },
     context: {
       variants: {
         calculated_price: QueryContext({ currency_code, region_id }),
