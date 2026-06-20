@@ -141,13 +141,13 @@ export async function generateInvoicePdf(invoice: InvoiceData): Promise<Buffer> 
   doc
     .fillColor("#777777")
     .text(
-      "Pri plačilu se sklicujte na številko računa. Prosimo, da račun poravnate do valute plačila. DDV ni obračunan na podlagi 1. odstavka 94. clena Zakona o davku na dodano vrednost.",
+      "Atelje VOLJA, proizvodnja in trgovina trajnostnih oblačil, d.o.o. • Njegoševa cesta 6E, 1000 Ljubljana • Matična št.: 9726136000 • Davčna št.: 83537392 • Ustanovni kapital podjetja: 7.500 EUR",
       PAGE_MARGIN,
       doc.y,
       { align: "left", width: 500 }
     )
     .text(
-      "When making the payment, please refer to the invoice number. Please settle the invoice by the payment due date. VAT has not been charged in accordance with Article 94, Paragraph 1 of the Value Added Tax Act.",
+      "Podjetje ni zavezanec za DDV po 1. odstavku 94. člena ZDDV-1. // The VAT has not been charged in accordance with the first paragraph of Article 94 of the Value Added Tax Act.",
       PAGE_MARGIN,
       doc.y + 15,
       { align: "left", width: 500 }
