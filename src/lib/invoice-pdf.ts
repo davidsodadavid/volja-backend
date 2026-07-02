@@ -141,17 +141,24 @@ export async function generateInvoicePdf(invoice: InvoiceData): Promise<Buffer> 
   doc
     .fillColor("#777777")
     .text(
-      "Atelje VOLJA, proizvodnja in trgovina trajnostnih oblačil, d.o.o. • Njegoševa cesta 6E, 1000 Ljubljana • Matična št.: 9726136000 • Davčna št.: 83537392 • Ustanovni kapital podjetja: 7.500 EUR",
+      "Podjetje ni zavezanec za DDV po 1. odstavku 94. člena ZDDV-1. // The VAT has not been charged in accordance with the first paragraph of Article 94 of the Value Added Tax Act.",
       PAGE_MARGIN,
       doc.y,
       { align: "left", width: 500 }
     )
-    .text(
-      "Podjetje ni zavezanec za DDV po 1. odstavku 94. člena ZDDV-1. // The VAT has not been charged in accordance with the first paragraph of Article 94 of the Value Added Tax Act.",
-      PAGE_MARGIN,
-      doc.y + 15,
-      { align: "left", width: 500 }
-    )
+
+  const companyFooter =
+    "Atelje VOLJA, proizvodnja in trgovina trajnostnih oblačil, d.o.o. • Njegoševa cesta 6E, 1000 Ljubljana • Matična št.: 9726136000 • Davčna št.: 83537392 • Ustanovni kapital podjetja: 7.500 EUR"
+  doc.fontSize(6.5)
+  const companyFooterHeight = doc.heightOfString(companyFooter, { width: 500 })
+  // Zero the bottom margin so pdfkit doesn't push the footer onto a new page.
+  doc.page.margins.bottom = 0
+  doc.text(
+    companyFooter,
+    PAGE_MARGIN,
+    doc.page.height - PAGE_MARGIN - companyFooterHeight,
+    { align: "left", width: 500 }
+  )
 
   doc.end()
   return pdfGenerated

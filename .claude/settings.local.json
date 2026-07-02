@@ -63,7 +63,10 @@
       "PowerShell(Invoke-WebRequest -Uri 'https://r2.ateljevolja.si/static/volja-logo.webp' -OutFile \"$env:TEMP\\\\volja-logo.webp\"; $b = [IO.File]::ReadAllBytes\\(\"$env:TEMP\\\\volja-logo.webp\"\\); [Text.Encoding]::ASCII.GetString\\($b[0..3]\\) + ' / ' + [Text.Encoding]::ASCII.GetString\\($b[8..15]\\); if \\([Text.Encoding]::ASCII.GetString\\($b[12..15]\\) -eq 'VP8X'\\) { 'VP8X flags: ' + $b[20] + ' \\(alpha bit set: ' + \\(\\($b[20] -band 16\\) -ne 0\\) + '\\)' })",
       "PowerShell(node -e \"const sharp=require\\('C:/Users/PC/AppData/Local/Temp/webp2png/node_modules/sharp'\\); sharp\\('C:/Users/PC/AppData/Local/Temp/webp2png/volja-logo.webp'\\).png\\(\\).toFile\\('C:/Users/PC/AppData/Local/Temp/webp2png/volja-logo.png'\\).then\\(i=>console.log\\('PNG written:', i.width+'x'+i.height, i.size+' bytes'\\)\\)\")",
       "PowerShell(node upload-logo.js && Invoke-WebRequest -Uri 'https://r2.ateljevolja.si/static/volja-logo.png' -Method Head | Select-Object StatusCode, @{n='ContentType';e={$_.Headers.'Content-Type'}}, @{n='Bytes';e={$_.Headers.'Content-Length'}})",
-      "PowerShell(npx medusa exec ./src/scripts/test-invoice-email.ts)"
+      "PowerShell(npx medusa exec ./src/scripts/test-invoice-email.ts)",
+      "PowerShell(npx tsc --noEmit -p tsconfig.json 2>&1 | Select-Object -First 20)",
+      "PowerShell(npx ts-node -T \"C:\\\\Users\\\\PC\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Projects-volja-backend\\\\cce463a1-0efd-4340-986b-984f326ee1e4\\\\scratchpad\\\\gen-invoice.ts\")",
+      "PowerShell($env:TS_NODE_COMPILER_OPTIONS = '{\"module\":\"CommonJS\",\"moduleResolution\":\"node\"}'; npx ts-node -T \"C:\\\\Users\\\\PC\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Projects-volja-backend\\\\cce463a1-0efd-4340-986b-984f326ee1e4\\\\scratchpad\\\\gen-invoice.ts\")"
     ]
   }
 }
