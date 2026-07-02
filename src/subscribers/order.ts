@@ -30,6 +30,28 @@ export default async function orderPlacedHandler({
 
     const order = orders[0]
 
+    // Size and color are custom fields stored in variant metadata (set via the
+    // admin variant-details widget), so they must be fetched separately.
+    const variantIds = (order.items ?? [])
+        .map((item: any) => item?.variant_id)
+        .filter(Boolean)
+    const variantMetadata: Record<string, Record<string, unknown>> = {}
+    if (variantIds.length) {
+        const { data: variants } = await query.graph({
+            entity: "variant",
+            fields: ["id", "metadata"],
+            filters: { id: variantIds },
+        })
+        for (const variant of variants) {
+            variantMetadata[variant.id] = variant.metadata ?? {}
+        }
+    }
+
+    const variantDetail = (item: any, key: "size" | "color") => {
+        const value = item?.variant_id ? variantMetadata[item.variant_id]?.[key] : undefined
+        return typeof value === "string" && value ? value : undefined
+    }
+
     const address = [
         order.shipping_address?.address_1,
         order.shipping_address?.address_2,
@@ -56,6 +78,8 @@ export default async function orderPlacedHandler({
             title: item?.title ?? "",
             quantity: item?.quantity ?? 1,
             unitPrice: item?.unit_price ?? 0,
+            size: variantDetail(item, "size"),
+            color: variantDetail(item, "color"),
         })),
     })
 

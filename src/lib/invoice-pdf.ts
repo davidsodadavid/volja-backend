@@ -14,6 +14,8 @@ export type InvoiceData = {
     title: string
     quantity: number
     unitPrice: number
+    size?: string
+    color?: string
   }[]
 }
 
@@ -111,14 +113,48 @@ export async function generateInvoicePdf(invoice: InvoiceData): Promise<Buffer> 
     .stroke()
 
   let y = headerBottomY + 10
+  const titleWidth = qtyX - itemX - 15
+  const isHexColor = (value: string) => /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value)
   for (const item of invoice.items) {
     doc
       .fillColor("#444444")
-      .text(item.title, itemX, y)
+      .text(item.title, itemX, y, { width: titleWidth })
       .text(String(item.quantity), qtyX, y)
       .text(formatAmount(item.unitPrice), priceX, y)
       .text(formatAmount(item.unitPrice * item.quantity), totalX, y)
-    y += 20
+    let rowBottom = y + doc.heightOfString(item.title, { width: titleWidth })
+
+    // Size and color swatch on a small detail line under the title
+    if (item.size || item.color) {
+      const detailY = rowBottom + 3
+      doc.fontSize(8).fillColor("#777777")
+      let detailX = itemX
+      if (item.size) {
+        const sizeLabel = `Size: ${item.size}`
+        doc.text(sizeLabel, detailX, detailY, { lineBreak: false })
+        detailX += doc.widthOfString(sizeLabel) + 10
+      }
+      if (item.color) {
+        doc.text("Color:", detailX, detailY, { lineBreak: false })
+        detailX += doc.widthOfString("Color:") + 4
+        if (isHexColor(item.color)) {
+          // Rest the swatch on the text baseline so it lines up with the labels
+          const swatchSize = 7
+          const ascent = ((doc as any)._font.ascender / 1000) * 8
+          doc
+            .roundedRect(detailX, detailY + ascent - swatchSize, swatchSize, swatchSize, 1.5)
+            .lineWidth(0.5)
+            .fillAndStroke(item.color, "#999999")
+            .fillColor("#777777")
+        } else {
+          doc.text(item.color, detailX, detailY, { lineBreak: false })
+        }
+      }
+      doc.fontSize(10)
+      rowBottom = detailY + 11
+    }
+
+    y = Math.max(y + 20, rowBottom + 6)
   }
 
   doc

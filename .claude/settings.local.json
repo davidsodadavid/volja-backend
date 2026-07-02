@@ -66,7 +66,15 @@
       "PowerShell(npx medusa exec ./src/scripts/test-invoice-email.ts)",
       "PowerShell(npx tsc --noEmit -p tsconfig.json 2>&1 | Select-Object -First 20)",
       "PowerShell(npx ts-node -T \"C:\\\\Users\\\\PC\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Projects-volja-backend\\\\cce463a1-0efd-4340-986b-984f326ee1e4\\\\scratchpad\\\\gen-invoice.ts\")",
-      "PowerShell($env:TS_NODE_COMPILER_OPTIONS = '{\"module\":\"CommonJS\",\"moduleResolution\":\"node\"}'; npx ts-node -T \"C:\\\\Users\\\\PC\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Projects-volja-backend\\\\cce463a1-0efd-4340-986b-984f326ee1e4\\\\scratchpad\\\\gen-invoice.ts\")"
+      "PowerShell($env:TS_NODE_COMPILER_OPTIONS = '{\"module\":\"CommonJS\",\"moduleResolution\":\"node\"}'; npx ts-node -T \"C:\\\\Users\\\\PC\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Projects-volja-backend\\\\cce463a1-0efd-4340-986b-984f326ee1e4\\\\scratchpad\\\\gen-invoice.ts\")",
+      "PowerShell(npx medusa exec ./src/scripts/test-variant-details.ts 2>&1 | Select-Object -Last 25)",
+      "PowerShell(npx medusa exec ./src/scripts/test-variant-details.ts 2>&1 | Select-Object -Last 10)",
+      "PowerShell($env:TS_NODE_COMPILER_OPTIONS = '{\"module\":\"CommonJS\",\"moduleResolution\":\"node\"}'; npx ts-node -T \"C:\\\\Users\\\\PC\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Projects-volja-backend\\\\cce463a1-0efd-4340-986b-984f326ee1e4\\\\scratchpad\\\\gen-invoice.ts\" 2>&1 | Select-Object -Last 2)",
+      "PowerShell($env:TS_NODE_COMPILER_OPTIONS = '{\"module\":\"CommonJS\",\"moduleResolution\":\"node\"}'; npx ts-node -T \"C:\\\\Users\\\\PC\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Projects-volja-backend\\\\cce463a1-0efd-4340-986b-984f326ee1e4\\\\scratchpad\\\\gen-invoice.ts\" 2>&1 | Select-Object -Last 1)",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\PC\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Projects-volja-backend\\\\cce463a1-0efd-4340-986b-984f326ee1e4\\\\scratchpad\\\\sample-invoice-v2.pdf\" \"$env:USERPROFILE\\\\Desktop\\\\sample-invoice-v2.pdf\" && Invoke-Item \"$env:USERPROFILE\\\\Desktop\\\\sample-invoice-v2.pdf\")",
+      "PowerShell(npx tsc --noEmit -p tsconfig.json 2>&1 | Select-Object -First 10; $env:TS_NODE_COMPILER_OPTIONS = '{\"module\":\"CommonJS\",\"moduleResolution\":\"node\"}'; npx ts-node -T \"C:\\\\Users\\\\PC\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Projects-volja-backend\\\\cce463a1-0efd-4340-986b-984f326ee1e4\\\\scratchpad\\\\gen-invoice.ts\" 2>&1 | Select-Object -Last 1)",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\PC\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Projects-volja-backend\\\\cce463a1-0efd-4340-986b-984f326ee1e4\\\\scratchpad\\\\sample-invoice-v3.pdf\" \"$env:USERPROFILE\\\\Desktop\\\\sample-invoice-v3.pdf\" && Invoke-Item \"$env:USERPROFILE\\\\Desktop\\\\sample-invoice-v3.pdf\")",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\PC\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Projects-volja-backend\\\\cce463a1-0efd-4340-986b-984f326ee1e4\\\\scratchpad\\\\sample-invoice-v4.pdf\" \"$env:USERPROFILE\\\\Desktop\\\\sample-invoice-v4.pdf\" && Invoke-Item \"$env:USERPROFILE\\\\Desktop\\\\sample-invoice-v4.pdf\")"
     ]
   }
 }
